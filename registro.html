@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Miembros - CLM Puente Piedra</title>
+  <link rel="icon" type="image/png" href="LOGOCLM.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:   #C9A84C;
+      --gold2:  #E8C97A;
+      --dark:   #0D1117;
+      --dark2:  #161B22;
+      --dark3:  #21262D;
+      --dark4:  #30363D;
+      --text:   #E6EDF3;
+      --text2:  #8B949E;
+      --success:#3FB950;
+      --danger: #F85149;
+    }
+    body {
+      font-family: 'Lato', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #1a1200 0%, #0D1117 60%);
+      min-height: 100vh; color: var(--text);
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── HEADER ── */
+    .reg-header {
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .reg-logo {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: contain; margin-bottom: 1rem;
+      box-shadow: 0 0 30px rgba(201,168,76,.3);
+    }
+    .reg-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: .3rem;
+    }
+    .reg-header p {
+      font-size: .8rem; color: var(--text2);
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+
+    /* ── CARD ── */
+    .reg-card {
+      max-width: 620px; margin: 0 auto;
+      background: var(--dark2); border: 1px solid var(--dark4);
+      border-radius: 20px; padding: 2.5rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    }
+    .reg-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; margin-bottom: .5rem;
+      color: var(--text);
+    }
+    .reg-card-desc {
+      font-size: .88rem; color: var(--text2);
+      line-height: 1.6; margin-bottom: 2rem;
+      border-left: 3px solid var(--gold);
+      padding-left: .9rem;
+    }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-full  { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label {
+      font-size: .78rem; font-weight: 700; color: var(--text2);
+      letter-spacing: .5px; text-transform: uppercase;
+    }
+    .form-group label span { color: var(--danger); margin-left: .2rem; }
+    .form-group input,
+    .form-group select {
+      background: var(--dark3); border: 1px solid var(--dark4);
+      border-radius: 8px; padding: .7rem .9rem;
+      color: var(--text); font-family: 'Lato', sans-serif;
+      font-size: .92rem; outline: none;
+      transition: border-color .2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--gold); }
+    .form-group input::placeholder { color: var(--text2); }
+    .form-group select option { background: var(--dark3); }
+
+    /* ── DIVIDER ── */
+    .form-divider {
+      grid-column: 1 / -1;
+      display: flex; align-items: center; gap: 1rem;
+      margin: .5rem 0;
+    }
+    .form-divider span {
+      font-size: .75rem; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: .5px; white-space: nowrap;
+    }
+    .form-divider::before, .form-divider::after {
+      content: ""; flex: 1; height: 1px; background: var(--dark4);
+    }
+
+    /* ── BTN ── */
+    .btn-submit {
+      width: 100%; margin-top: 1.5rem;
+      padding: .85rem; border: none; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #0D1117; font-family: 'Lato', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: all .2s; letter-spacing: .4px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201,168,76,.4);
+    }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* ── MENSAJES ── */
+    .msg {
+      border-radius: 10px; padding: .8rem 1rem;
+      font-size: .88rem; margin-top: 1rem;
+      display: none;
+    }
+    .msg-error   { background: rgba(248,81,73,.1); border: 1px solid rgba(248,81,73,.3); color: var(--danger); }
+    .msg-success { background: rgba(63,185,80,.1);  border: 1px solid rgba(63,185,80,.3);  color: var(--success); }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen {
+      display: none; text-align: center; padding: 2rem 0;
+    }
+    .success-icon {
+      font-size: 4rem; margin-bottom: 1rem;
+      animation: bounceIn .5s ease;
+    }
+    @keyframes bounceIn {
+      0%   { transform: scale(0); opacity: 0; }
+      60%  { transform: scale(1.2); }
+      100% { transform: scale(1);  opacity: 1; }
+    }
+    .success-screen h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.5rem;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: .7rem;
+    }
+    .success-screen p { font-size: .9rem; color: var(--text2); line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .reg-footer {
+      text-align: center; margin-top: 2rem;
+      font-size: .75rem; color: var(--text2);
+    }
+    .reg-footer a {
+      color: var(--gold); text-decoration: none; font-weight: 700;
+    }
+    .reg-footer a:hover { color: var(--gold2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .reg-card  { padding: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .reg-header h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="reg-header">
+    <img src="LOGOCLM.png" class="reg-logo" alt="CLM Puente Piedra"/>
+    <h1>CLM Puente Piedra</h1>
+    <p>Registro de Miembros</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="reg-card">
+
+    <!-- FORMULARIO -->
+    <div id="formSection">
+      <h2 class="reg-card-title">Bienvenido/a a nuestra familia 🙏</h2>
+      <p class="reg-card-desc">
+        Queridos hermanos, les damos cordialmente la bienvenida.
+        Por favor complete este formulario para el registro de miembros.
+        Sus datos nos ayudaran a organizar mejor nuestra iglesia y brindarle
+        una excelente atencion. ¡Gracias por ser parte de nuestra congregacion!
+      </p>
+
+      <div id="msgError"   class="msg msg-error"></div>
+      <div id="msgSuccess" class="msg msg-success"></div>
+
+      <form id="regForm" novalidate autocomplete="off">
+        <div class="form-grid">
+
+          <!-- NOMBRES -->
+          <div class="form-divider form-full"><span>Datos Personales</span></div>
+
+          <div class="form-group">
+            <label>Nombres <span>*</span></label>
+            <input id="nombres" type="text" placeholder="Ej: Maria Lucia" required/>
+          </div>
+          <div class="form-group">
+            <label>Apellidos <span>*</span></label>
+            <input id="apellidos" type="text" placeholder="Ej: Torres Rios" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Nacimiento <span>*</span></label>
+            <input id="fechaNacimiento" type="date" required/>
+          </div>
+          <div class="form-group">
+            <label>Genero <span>*</span></label>
+            <select id="genero" required>
+              <option value="">Selecciona...</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+            </select>
+          </div>
+
+          <!-- CONTACTO -->
+          <div class="form-divider form-full"><span>Informacion de Contacto</span></div>
+
+          <div class="form-group">
+            <label>Telefono / Celular <span>*</span></label>
+            <input id="telefono" type="tel" placeholder="Ej: 987 654 321" required/>
+          </div>
+          <div class="form-group">
+            <label>Correo Electronico</label>
+            <input id="correo" type="email" placeholder="correo@ejemplo.com"/>
+          </div>
+
+          <!-- DIRECCION -->
+          <div class="form-divider form-full"><span>Direccion</span></div>
+
+          <div class="form-group form-full">
+            <label>Distrito / Urbanizacion <span>*</span></label>
+            <input id="direccion" type="text" placeholder="Ej: Puente Piedra, Los Olivos, Comas..." required/>
+          </div>
+          <div class="form-group">
+            <label>Provincia</label>
+            <input id="provincia" type="text" placeholder="Ej: Lima"/>
+          </div>
+          <div class="form-group">
+            <label>Departamento</label>
+            <input id="departamento" type="text" placeholder="Ej: Lima"/>
+          </div>
+
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnEnviar">
+          Registrarme en la Iglesia
+        </button>
+      </form>
+    </div>
+
+    <!-- PANTALLA DE EXITO -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <h2>Registro Exitoso!</h2>
+      <p>
+        Gracias <strong id="nombreRegistrado"></strong>!<br/><br/>
+        Tu informacion ha sido registrada correctamente en la base de datos
+        de <strong>CLM Puente Piedra</strong>.<br/><br/>
+        ¡Bienvenido/a a nuestra congregacion! Dios te bendiga.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="reg-footer">
+    Developed by
+    <a href="https://www.instagram.com/davjstudio" target="_blank" rel="noopener">Davj Studio</a>
+  </div>
+
+<!-- Firebase (solo Firestore, sin Auth) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey:            "AIzaSyC_DVPcMOJQNLsKXRg9vTNISQaOHGqYYrs",
+  authDomain:        "clm-iglesia-app.firebaseapp.com",
+  projectId:         "clm-iglesia-app",
+  storageBucket:     "clm-iglesia-app.firebasestorage.app",
+  messagingSenderId: "385996661780",
+  appId:             "1:385996661780:web:e7507f97757e215718b301"
+});
+var db = firebase.firestore();
+
+document.getElementById("regForm").onsubmit = async function(e) {
+  e.preventDefault();
+
+  var btn       = document.getElementById("btnEnviar");
+  var msgError  = document.getElementById("msgError");
+  var msgOk     = document.getElementById("msgSuccess");
+  msgError.style.display = "none";
+  msgOk.style.display    = "none";
+
+  // Leer valores
+  var nombres      = document.getElementById("nombres").value.trim();
+  var apellidos    = document.getElementById("apellidos").value.trim();
+  var fechaNac     = document.getElementById("fechaNacimiento").value;
+  var genero       = document.getElementById("genero").value;
+  var telefono     = document.getElementById("telefono").value.trim();
+  var correo       = document.getElementById("correo").value.trim();
+  var direccion    = document.getElementById("direccion").value.trim();
+  var provincia    = document.getElementById("provincia").value.trim();
+  var departamento = document.getElementById("departamento").value.trim();
+
+  // Validar obligatorios
+  if (!nombres || !apellidos) {
+    mostrarError("Por favor ingresa tu nombre completo.");
+    return;
+  }
+  if (!fechaNac) {
+    mostrarError("Por favor ingresa tu fecha de nacimiento.");
+    return;
+  }
+  if (!genero) {
+    mostrarError("Por favor selecciona tu genero.");
+    return;
+  }
+  if (!telefono) {
+    mostrarError("Por favor ingresa tu numero de telefono.");
+    return;
+  }
+  if (!direccion) {
+    mostrarError("Por favor ingresa tu direccion.");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Registrando...";
+
+  try {
+    var nombre = nombres + " " + apellidos;
+
+    // Armar residencia completa
+    var partes = [direccion];
+    if (provincia)    partes.push(provincia);
+    if (departamento) partes.push(departamento);
+    var residencia = partes.join(", ");
+
+    await db.collection("miembros").add({
+      nombre:          nombre,
+      fechaNacimiento: fechaNac,
+      genero:          genero,
+      telefono:        telefono,
+      correo:          correo || "",
+      residencia:      residencia,
+      estado:          "Activo",
+      ministerio:      "",
+      fotoUrl:         "",
+      creadoEn:        new Date().toISOString(),
+      registradoViaFormulario: true
+    });
+
+    // Mostrar pantalla de exito
+    document.getElementById("formSection").style.display = "none";
+    document.getElementById("nombreRegistrado").textContent = nombres;
+    document.getElementById("successScreen").style.display = "block";
+
+  } catch(err) {
+    mostrarError("Ocurrio un error al registrar. Por favor intenta de nuevo.");
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = "Registrarme en la Iglesia";
+  }
+};
+
+function mostrarError(msg) {
+  var el = document.getElementById("msgError");
+  el.textContent   = "⚠️ " + msg;
+  el.style.display = "block";
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+</script>
+
+</body>
+</html>
